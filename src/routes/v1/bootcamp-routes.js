@@ -1,22 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const {BootcampController} = require('../../controllers');
 
 //this is typically reffering to /api/v1/bootcamps which is a GET Request
-router.get('/',(request,response)=>{
-    response.status(200).json({'Success' : true , 'Data' : 'hey' });
-});
+router.get('/',BootcampController.getBootcamps);
 
 //this is typically reffering to /api/v1/bootcamps/:id which is a GET Request
-router.get('/:id');
+router.get('/:id',BootcampController.getBootcampById);
 
 //this is typically reffering to /api/v1/bootcamps/:id which is a POST Request
-router.post('/');
+router.post('/',BootcampController.updateBootcampById);
 
 //this is typically reffering to /api/v1/bootcamps/:id which is a PUT Request
-router.put('/:id');
+router.put('/:id',BootcampController.updateBootcampById);
 
 //this is typically reffering to /api/v1/bootcamps/:id which is a DELETE Request
-router.delete('/:id');
+router.delete('/:id',BootcampController.deleteBootcampById);
 
 
 module.exports = router;

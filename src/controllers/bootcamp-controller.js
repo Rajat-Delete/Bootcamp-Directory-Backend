@@ -1,9 +1,10 @@
 
+
 //desc    :    Get All Bootcamps
 //@access :    Public
 async function getBootcamps(request,response,next){
     try{
-
+        return response.status(200).json({'Success' : 'true','Data' : {}});
     }catch(error){
 
     }
