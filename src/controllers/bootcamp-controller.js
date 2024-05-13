@@ -1,5 +1,7 @@
 const { BootcampService } = require('../service');
 const {StatusCodes} = require('http-status-codes');
+const { SuccessResponse , ErrorResponse } = require('../utils/common');
+const AppError = require('../utils/error/App-Error');
 
 
 //desc    :    Get All Bootcamps
@@ -7,9 +9,19 @@ const {StatusCodes} = require('http-status-codes');
 async function getBootcamps(request,response,next){
     try{
         const bootcamps = await BootcampService.getAllBootcamps();
-        return response.status(StatusCodes.OK).json(bootcamps);
+        const bootcampCount = bootcamps.length;
+        if(bootcampCount === 0){
+            //throw response that no bootcamps exists in the database
+            throw new AppError(`No Bootcamps exists`,StatusCodes.NOT_FOUND);
+        }
+        SuccessResponse.count = bootcampCount;
+        SuccessResponse.data = bootcamps;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
         console.log('error in fetching bootcamps');
+        ErrorResponse.error = error;
+        ErrorResponse.Message = error.message;
+        return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
     }
 }
 
@@ -28,12 +40,21 @@ async function getBootcampById(request,response,next){
 //@access :    Public
 async function createBootcamp(request,response,next){
     try{
-        //console.log('request>>',request.body); 
         const Bootcamp = await BootcampService.createBootcamp(request.body);
-        //console.log('Bootcmamp is>>',Bootcamp); 
-        return response.status(StatusCodes.OK).json(Bootcamp);
+        SuccessResponse.data=Bootcamp;
+        delete SuccessResponse.count;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
-        console.log('error in bootcamp creation',error);
+        console.log('error in bootcamp creation',error.message);
+        if(error.message.code === "E11000"){
+            ErrorResponse.error = new AppError(`A Duplicate value has been passed in the Incoming Request`,StatusCodes.BAD_REQUEST);
+            ErrorResponse.message = error.message;
+            return response.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+        }
+
+        ErrorResponse.error = error;
+        ErrorResponse.message = error.message;
+        return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
     }
 }
 
@@ -42,10 +63,21 @@ async function createBootcamp(request,response,next){
 //@access :    Public
 async function updateBootcampById(request,response,next){
     try{
+        
         const bootcamp = await BootcampService.updateBootcampById(request.params.id,request.body);
-        return response.status(StatusCodes.OK).json(bootcamp);
+        if(!bootcamp){
+            ErrorResponse.message = `No Bootcamp exists for the Given Id ${request.params.id}`;
+            ErrorResponse.error = new AppError(`No Bootcamp exists for the Given Id ${request.params.id}`,StatusCodes.NOT_FOUND);
+            return response.status(StatusCodes.NOT_FOUND).json(ErrorResponse);
+        }
+        delete SuccessResponse.count;
+        SuccessResponse.data = bootcamp;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
         console.log('error in update bootcamp',error);
+        ErrorResponse.data = error;
+        ErrorResponse.message = error.message;
+        return response.status(Statuscode.INTERNAL_SERVER_ERROR).json(ErrorResponse);
     }
 }
 
@@ -55,9 +87,19 @@ async function updateBootcampById(request,response,next){
 async function deleteBootcampById(request,response,next){
     try{
         const bootcamp = await BootcampService.deleteBootcampById(request.params.id);
-        return response.status(StatusCodes.OK).json(bootcamp);
+        if(!bootcamp){
+            ErrorResponse.message = `No Bootcamp exists for the Given Id ${request.params.id}`;
+            ErrorResponse.error = new AppError(`No Bootcamp exists for the Given Id ${request.params.id}`,StatusCodes.NOT_FOUND);
+            return response.status(StatusCodes.NOT_FOUND).json(ErrorResponse);
+        };
+        delete SuccessResponse.count;
+        SuccessResponse.data = bootcamp;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
         console.log('error in delete bootcamp',error);
+        ErrorResponse.data = error;
+        ErrorResponse.message = error.message;
+        return response.status(Statuscode.INTERNAL_SERVER_ERROR).json(ErrorResponse);
     }
 }
 

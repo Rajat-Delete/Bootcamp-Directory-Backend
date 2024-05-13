@@ -6,6 +6,7 @@ async function createBootcamp(data){
         return bootcamp;
     } catch (error) {
         console.log('error in create Bootcamp',error);
+        throw error;
     }
 }
 
@@ -15,6 +16,7 @@ async function getAllBootcamps(){
         return Bootcamps;
     } catch (error) {
         console.log(`An error in fecthing all Bootcamps`);
+        throw error;
     }
 }
 
@@ -39,6 +41,7 @@ async function updateBootcampById(id,data){
         return bootcamp;
     } catch (error) {
         console.log('error in updateBootcamp',error);
+        throw error;
     }
     
 }
@@ -49,6 +52,7 @@ async function deleteBootcampById(id){
         return bootcamp;
     } catch (error) {
         console.log('error in deleting deleting bootcamp',error);
+        throw error;
     }
 }
 
