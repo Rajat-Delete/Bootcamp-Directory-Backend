@@ -6,7 +6,7 @@ ConnectDB();
 const app = express();
 const approutes = require('./routes');
 const PORT = ServerConfig.PORT||5002;
-
+app.use(express.json());
 app.use('/api',approutes);
 
 // app.use('/',(request,response)=>{
