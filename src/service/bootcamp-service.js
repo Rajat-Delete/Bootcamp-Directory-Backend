@@ -23,12 +23,10 @@ async function getAllBootcamps(){
 async function getBootcampById(id){
     try {
         const bootcamp = await Bootcamp.findById(id);
-        if(!bootcamp){
-            //will throw error here
-        }
         return bootcamp;
     } catch (error) {
         console.log(`An error in fecthing Bootcamp`);
+        throw error;
     }
 }
 
