@@ -97,6 +97,7 @@ BootcampSchema.pre('save', function(next){
 
 BootcampSchema.pre('save', async function(next){
     console.log('inside geocoder::',this.address);
+    console.log('geocoder',Geocoder);
     const location = await Geocoder.geocode(this.address);
     console.log('lcoation data from the mapquest api',location);
 

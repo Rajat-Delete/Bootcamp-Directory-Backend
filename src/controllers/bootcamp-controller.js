@@ -120,9 +120,18 @@ async function deleteBootcampById(request,response,next){
 //@access :    Public
 async function getBootcampWithinRadius(request,response,next){
     try{
-
+        const {zipcode , distance} = request.params;
+        const bootcamps = await BootcampService.getBootcampsWithinRadius(zipcode,distance);
+        //console.log('bootcamps from api are ',bootcamps);
+        if(!bootcamps || bootcamps.length===0){
+            throw new AppError('No bootcamps exist Within the Radius of Zipcode',StatusCodes.NOT_FOUND);
+        }
+        SuccessResponse.data = bootcamps;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
-
+        ErrorResponse.error = error;
+        ErrorResponse.message = error.message;
+        return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
     }
 }
 

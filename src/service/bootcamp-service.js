@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const { Geocoder } = require('../utils/common')
 
 async function createBootcamp(data){
     try {
@@ -54,6 +55,30 @@ async function deleteBootcampById(id){
     }
 }
 
+async function getBootcampsWithinRadius(zipcode,distance){
+    try {
+        //fetching the longitude and latitude from the zipcode
+        const loc = await Geocoder.geocode(zipcode);
+        const longitude = loc[0].longitude;
+        const latitude = loc[0].latitude;
+        //console.log(zipcode,distance,longitude,latitude);
+
+        //calculating the radius 
+        const radius = distance/3963;
+
+        const bootcamps = await Bootcamp.find({
+            location : {
+                $geoWithin : { $centerSphere : [[longitude,latitude],radius] }
+            }
+        });
+       // console.log('bootcamps from api are',bootcamps);
+        return bootcamps;
+    } catch (error) {
+        console.log('error in bootcamp find within radius',error);
+        throw error;
+    }
+}
+
 
 
 module.exports ={
@@ -62,4 +87,6 @@ module.exports ={
     getBootcampById,
     updateBootcampById,
     deleteBootcampById,
+    getBootcampsWithinRadius,
 }
+

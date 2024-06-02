@@ -18,5 +18,8 @@ router.put('/:id',Validators.validateRequestId,BootcampController.updateBootcamp
 //this is typically reffering to /api/v1/bootcamps/:id which is a DELETE Request
 router.delete('/:id',Validators.validateRequestId,BootcampController.deleteBootcampById);
 
+//this is typically reffering to /api/v1/bootcamps/radius/:zipcode/:distance
+router.get('/radius/:zipcode/:distance',BootcampController.getBootcampWithinRadius);
 
-module.exports = router;``
+
+module.exports = router;
