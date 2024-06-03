@@ -1,6 +1,6 @@
 const NodeGeocoder = require('node-geocoder');
 const { ServerConfig }  = require('../../config');
-console.log('process object',process.env);
+//console.log('process object',process.env);
 const options = {
     provider : process.env.GEOCODER_PROVIDER || ServerConfig.GEOCODER_PROVIDER,
     httpAdapter : 'https',

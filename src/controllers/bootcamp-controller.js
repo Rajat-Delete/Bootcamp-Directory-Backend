@@ -8,14 +8,16 @@ const AppError = require('../utils/error/App-Error');
 //@access :    Public
 async function getBootcamps(request,response,next){
     try{
-        const bootcamps = await BootcampService.getAllBootcamps();
-        const bootcampCount = bootcamps.length;
+        const bootcamps = await BootcampService.getAllBootcamps(request);
+        console.log('1>>',bootcamps);
+        const bootcampCount = bootcamps.data.length;
         if(bootcampCount === 0){
             //throw response that no bootcamps exists in the database
             throw new AppError(`No Bootcamps exists`,StatusCodes.NOT_FOUND);
         }
         SuccessResponse.count = bootcampCount;
-        SuccessResponse.data = bootcamps;
+        SuccessResponse.data = bootcamps.data;
+        SuccessResponse.pagination = bootcamps.pagination;
         return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
         console.log('error in fetching bootcamps');
@@ -127,6 +129,7 @@ async function getBootcampWithinRadius(request,response,next){
             throw new AppError('No bootcamps exist Within the Radius of Zipcode',StatusCodes.NOT_FOUND);
         }
         SuccessResponse.data = bootcamps;
+        SuccessResponse.count = bootcamps.length;
         return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
         ErrorResponse.error = error;
