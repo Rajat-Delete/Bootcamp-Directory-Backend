@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Bootcamp = require('../models/Bootcamp');
 const path = require('path');
+const Course = require('../models/Course');
 
 //loading the dotenv configs
 dotenv.config({path:__dirname+'/./../../.env'});
@@ -14,6 +15,7 @@ console.log('database conncted');
 //reading the testing data
 console.log(__dirname+'../_data/bootcamps.json');
 const bootcamps = JSON.parse(fs.readFileSync(path.join(__dirname,'..','_data','bootcamps.json')));
+const courses = JSON.parse(fs.readFileSync(path.join(__dirname,'..','_data','courses.json')));
 console.log('data of bootcamps',bootcamps);
 
 
@@ -21,7 +23,8 @@ console.log('data of bootcamps',bootcamps);
 async function insertData(){
     try {
         console.log('Data Imported');
-        await Bootcamp.create(bootcamps);
+        await Bootcamp.insertMany(bootcamps);
+        await Course.create(courses);
         process.exit();
     } catch (error) {
         console.log('error in inserting the data',error);
@@ -31,7 +34,9 @@ async function insertData(){
 async function deleteData(){
     try {
         await Bootcamp.deleteMany();
+        await Course.deleteMany();
         console.log('Data Deleted');
+        process.exit();
     } catch (error) {
         console.log('Data deleted');
     }
