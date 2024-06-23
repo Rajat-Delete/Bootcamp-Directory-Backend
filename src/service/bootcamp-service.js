@@ -1,5 +1,6 @@
 const Bootcamp = require('../models/Bootcamp');
-const { Geocoder } = require('../utils/common')
+const { Geocoder } = require('../utils/common');
+const Course = require('../models/Course');
 
 async function createBootcamp(data){
     try {
@@ -28,7 +29,7 @@ async function getAllBootcamps(request){
         //match the gte,gt,lte,lt,in and replace it with $ and the matched regex
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match=> `$${match}`);
 
-        query = Bootcamp.find(JSON.parse(queryStr));
+        query = Bootcamp.find(JSON.parse(queryStr)).populate('Courses');
 
         //find only selected fields
         if(request.query.select){
@@ -108,7 +109,10 @@ async function updateBootcampById(id,data){
 
 async function deleteBootcampById(id){
     try {
-        const bootcamp = await Bootcamp.findByIdAndDelete(id);
+        const bootcamp = await Bootcamp.findById(id);
+        console.log('bootcamp',bootcamp);
+        await bootcamp.deleteOne();
+        await Course.deleteMany({bootcamp : id});
         return bootcamp;
     } catch (error) {
         console.log('error in deleting deleting bootcamp',error);

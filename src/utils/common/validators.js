@@ -4,6 +4,7 @@ const ErrorResponse = require('./Error-response');
 
 
 function validateRequestId(request,response,next){
+    console.log('inside validate requestid');
     if(!request.params.id.match(/^[0-9a-fA-F]{24}$/)){
         ErrorResponse.error = new AppError(`Please enter a Valid Id`,StatusCodes.BAD_REQUEST);
         ErrorResponse.message = `Please enter a Valid ObjectId`;
@@ -30,6 +31,7 @@ function validateIdPresent(request,response,next){
         ErrorResponse.message = 'Please enter a Id';
         return response.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
     }
+    next();
 }
 module.exports = {
     validateRequestId,
