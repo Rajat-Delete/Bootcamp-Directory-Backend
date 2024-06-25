@@ -1,4 +1,5 @@
 const Course = require('../models/Course');
+const Bootcamp = require('../models/Bootcamp');
 const {ErrorResponse} = require('../utils/common/');
 const AppError = require('../utils/error/App-Error');
 const {StatusCodes} = require('http-status-codes');
@@ -35,7 +36,63 @@ async function getCourses(request,response){
     }
 }
 
+async function getCourseById(id){
+    try {
+        const course = await Course.findById(id);
+        return course;
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function createCourse(data){
+    try {
+        const bootcamp = await Bootcamp.findById(data.bootcamp);
+        if(!bootcamp){
+            throw new AppError(`No Bootcamp found for the Id ${data.bootcamp}`,StatusCodes.NOT_FOUND);
+        }
+        const course = await Course.create(data);
+        return course;
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function updateCourse(id,data){
+    try {
+        if(!await Course.findById(id)){
+            throw new AppError(`No Courses Exists for the CourseId ${id}`,StatusCodes.NOT_FOUND);
+        }   
+        const course = await Course.findByIdAndUpdate(id,data,{
+            new : true,
+            runValidators : true
+        });
+        return course;
+    } catch (error) {
+        console.log('error in updating course');
+        throw error;
+    }
+}
+
+async function deleteCourseById(id){
+    try {
+        const course = await Course.findById(id);
+        if(!course){
+            throw new AppError(`No Course Found with the Id ${id}`,StatusCodes.NOT_FOUND);
+        }
+        await Course.findByIdAndDelete(id);
+        return course;
+    } catch (error) {
+        console.log('error in service>>',error);
+        throw error;
+    }
+}
+
 
 module.exports = {
     getCourses,
+    getCourseById,
+    createCourse,
+    deleteCourseById,
+    updateCourse,
 }
