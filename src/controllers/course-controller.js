@@ -111,5 +111,5 @@ module.exports = {
     getCourseById,
     createCourse,
     updateCourseById,
-    deleteCourseById
+    deleteCourseById,
 }

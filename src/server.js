@@ -1,5 +1,7 @@
 const express =  require('express');
 const {ServerConfig,LoggerConfig,ConnectDB } = require('./config');
+const fileUpload = require('express-fileupload');
+const path = require('path');
 
 ConnectDB();
 
@@ -7,7 +9,13 @@ const app = express();
 const approutes = require('./routes');
 const PORT = ServerConfig.PORT||5002;
 app.use(express.json());
+app.use(fileUpload());
+
+//set static folder 
+app.use(express.static(path.join(__dirname,'public')));
 app.use('/api',approutes);
+
+
 
 // app.use('/',(request,response)=>{
 //     response.status(200).json({'Success' : 'True'});

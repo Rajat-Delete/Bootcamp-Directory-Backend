@@ -2,6 +2,7 @@ const { BootcampService } = require('../service');
 const {StatusCodes} = require('http-status-codes');
 const { SuccessResponse , ErrorResponse } = require('../utils/common');
 const AppError = require('../utils/error/App-Error');
+const Bootcamp = require('../models/Bootcamp');
 
 
 //desc    :    Get All Bootcamps
@@ -143,9 +144,16 @@ async function getBootcampWithinRadius(request,response,next){
 //@access :    Public
 async function uploadBootcampPhoto(request,response,next){
     try{
-
+        console.log('files from the API >>>',request.files);
+        
+        const bootcamp = await BootcampService.uploadBootcampPhoto(request);
+        SuccessResponse.data = bootcamp;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
-
+        console.log('error in file upload',error);
+        ErrorResponse.error = error;
+        ErrorResponse.message = error.message;
+        return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
     }
 }
 

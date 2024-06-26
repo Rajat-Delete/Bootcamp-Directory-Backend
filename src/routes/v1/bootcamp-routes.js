@@ -25,5 +25,8 @@ router.delete('/:id',Validators.validateRequestId,BootcampController.deleteBootc
 //this is typically reffering to /api/v1/bootcamps/radius/:zipcode/:distance
 router.get('/radius/:zipcode/:distance',BootcampController.getBootcampWithinRadius);
 
+//this is typically reffering to /api/v1/bootcamps/:id/photo
+router.put('/:id/photo',Validators.validateRequestId,BootcampController.uploadBootcampPhoto);
+
 
 module.exports = router;
