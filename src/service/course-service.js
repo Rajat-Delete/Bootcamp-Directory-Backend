@@ -7,7 +7,24 @@ const {StatusCodes} = require('http-status-codes');
 async function getCourses(request,response){
     try {
         let query;
-        //console.log('id',request.params);
+        //console.log('id',request.query);
+
+        //copy of the Incoming request query
+        let reqQuery = {...request.query};
+        console.log(reqQuery);
+
+        //remove some fields from the incoming request query
+        const removeFields = ['select', 'page','limit','sort'];
+
+        removeFields.forEach(param => delete reqQuery[param]);
+
+        console.log(reqQuery);
+        let queryStr = JSON.stringify(reqQuery);
+        //match the gte,gt,lte,lt,in and replace it with $ and the matched regex
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match=> `$${match}`);
+
+        console.log(queryStr);
+
         if(request.params.id){
             console.log('inside');
             //here we need to find all the courses as per the bootcampId
@@ -28,7 +45,49 @@ async function getCourses(request,response){
                 select : 'name description',
             });
         }
-        const Courses = await query;
+
+        //filtering the selected fields from the front end
+        if(request.query.select){
+            const fields = request.query.select.split(',').join(' ');
+            query  = query.select(fields);
+            //console.log(query);
+        }
+
+        //sorting the course as per the parameters provided
+        if(request.query.sort){
+            const sortby = request.query.sort.split(',').join(' ');
+            query = query.sort(sortby);
+        }else{
+            query = query.sort('-createdAt');
+        }
+
+        //adding pagination to the courses api
+        const page = parseInt(request.query.page) || 1;
+        const limit = parseInt(request.query.limit) || 10;
+        const startIndex = (page-1)*limit;
+        const endIndex = page*limit;
+        const total = await Course.countDocuments();        
+
+        //making the pagination object
+        let pagination = {};
+        if(startIndex>0){
+            pagination.pre = {
+                'page' : page-1,
+                'limit': limit
+            }
+        }
+
+        if(endIndex<total){
+            pagination.next ={
+                'page' : page+1,
+                'limit' : limit
+            }
+        }
+
+        query.skip(startIndex).limit(limit);
+        const Courses = {};
+        Courses.data = await query;
+        Courses.pagination = pagination;
         return Courses;
     } catch (error) {
         console.log('error in finding courses',error);

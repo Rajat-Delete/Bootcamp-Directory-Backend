@@ -17,7 +17,8 @@ async function getCourses(request,response,next){
                 throw new AppError('No Courses Found',StatusCodes.NOT_FOUND);
             }
         SuccessResponse.count = CoursesCount;
-        SuccessResponse.data = courses;
+        SuccessResponse.data = courses.data;
+        SuccessResponse.pagination = courses.pagination;
         return response.status(StatusCodes.OK).json(SuccessResponse);
     } catch (error) {
         console.log('error in finding courses',error);

@@ -23,7 +23,7 @@ console.log('data of bootcamps',bootcamps);
 async function insertData(){
     try {
         console.log('Data Imported');
-        await Bootcamp.insertMany(bootcamps);
+        //await Bootcamp.insertMany(bootcamps);
         await Course.create(courses);
         process.exit();
     } catch (error) {
