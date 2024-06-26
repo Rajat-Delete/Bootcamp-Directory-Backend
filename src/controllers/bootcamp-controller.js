@@ -35,7 +35,8 @@ async function getBootcampById(request,response,next){
         if(!bootcamp){
             throw new AppError(`No Bootcamp found with the Given Id ${request.params.id}`,StatusCodes.NOT_FOUND);
         }
-        return response.status(StatusCodes.OK).json(bootcamp);
+        SuccessResponse.data = bootcamp;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
     }catch(error){
         ErrorResponse.error = error;
         ErrorResponse.message = error.message;

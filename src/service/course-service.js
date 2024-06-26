@@ -54,6 +54,7 @@ async function createCourse(data){
         const course = await Course.create(data);
         return course;
     } catch (error) {
+        console.log('error in course creation service', error);
         throw error;
     }
 }
@@ -80,7 +81,7 @@ async function deleteCourseById(id){
         if(!course){
             throw new AppError(`No Course Found with the Id ${id}`,StatusCodes.NOT_FOUND);
         }
-        await Course.findByIdAndDelete(id);
+        await course.deleteOne();
         return course;
     } catch (error) {
         console.log('error in service>>',error);

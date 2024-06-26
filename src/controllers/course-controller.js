@@ -38,6 +38,7 @@ async function getCourseById(request, response,next){
             return response.status(StatusCodes.NOT_FOUND).json(ErrorResponse);
         }
         delete SuccessResponse.count;
+        delete SuccessResponse.pagination;
         SuccessResponse.data = course;
         return response.status(StatusCodes.OK).json(SuccessResponse);
     } catch (error) {
@@ -53,6 +54,7 @@ async function getCourseById(request, response,next){
 async function createCourse(request,response,next){
     try {
         //taking the bootcampId from the Url params and pushing it to request body
+        console.log('inside course creation');
         request.body.bootcamp = request.params.id;
         const course = await CourseService.createCourse(request.body);
         SuccessResponse.data = course;
