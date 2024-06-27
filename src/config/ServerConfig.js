@@ -12,4 +12,6 @@ module.exports = {
     GEOCODER_API_KEY : process.env.GEOCODER_API_KEY,
     MAX_FILE_UPLOAD : process.env.MAX_FILE_UPLOAD,
     FILE_UPLOAD_PATH : process.env.FILE_UPLOAD_PATH,
+    JWT_PRIVATE_KEY : process.env.JWT_PRIVATE_KEY,
+    JWT_TOKEN_EXPIRE : process.env.JWT_TOKEN_EXPIRE
 }
