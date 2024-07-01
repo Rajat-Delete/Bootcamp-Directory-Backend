@@ -101,9 +101,25 @@ async function getCurrentLoggedInUser(request,response,next){
     }
 }
 
+async function validateUserRoles(request,response,next){
+    try {
+        const roles = ['publisher','admin'];
+        console.log('>>',roles.includes(request.user.role));
+       if(!roles.includes(request.user.role)){
+        throw new AppError(`User role ${request.user.role} is not authorized to access the route`,StatusCodes.FORBIDDEN);
+       }
+       next();
+    } catch (error) {
+        ErrorResponse.error = error;
+        ErrorResponse.message = error.message;
+        return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
+    }
+}
+
 
 module.exports = {
     registerUser,
     signInUser,
     getCurrentLoggedInUser,
+    validateUserRoles,
 }
