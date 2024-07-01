@@ -74,7 +74,7 @@ async function sendTokenResponse(user,statusCode,response){
         SuccessResponse.data = user;
         const token = await user.getJsonWebToken();
         SuccessResponse.token = token;
-        console.log((ServerConfig.JWT_COOKIE_EXPIRE*24*60*60*1000)+Date.now());
+        // console.log((ServerConfig.JWT_COOKIE_EXPIRE*24*60*60*1000)+Date.now());
         const options = {
             expires : new Date(Date.now() + (ServerConfig.JWT_COOKIE_EXPIRE*24*60*60*1000)),
             httpOnly : true,
@@ -90,8 +90,20 @@ async function sendTokenResponse(user,statusCode,response){
 }
 
 
+async function getCurrentLoggedInUser(request,response,next){
+    try {
+        const user = await User.findById(request.user.id);
+        SuccessResponse.data = user;
+        return response.status(StatusCodes.OK).json(SuccessResponse);
+    } catch (error) {
+        ErrorResponse.error = error;
+        return response.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+    }
+}
+
 
 module.exports = {
     registerUser,
     signInUser,
+    getCurrentLoggedInUser,
 }
